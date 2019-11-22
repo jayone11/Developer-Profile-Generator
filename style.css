@@ -1,0 +1,146 @@
+/* Global styles */
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    font-family: "Open Sans", Arial, sans-serif;
+}
+
+body {
+    background-color: rgb(29, 30, 34);
+    /* background-color: lightblue; */
+    min-height: 100vh;
+}
+
+.overlay01 {
+    width: 100%;
+    height: 50%;
+    /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#000000+0,000000+67,000000+67&0+30,0.65+68 */
+    background: -moz-linear-gradient(top,  rgba(0,0,0,0) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.63) 67%, rgba(0,0,0,0.65) 68%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0) 30%,rgba(0,0,0,0.63) 67%,rgba(0,0,0,0.65) 68%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom,  rgba(0,0,0,0) 0%,rgba(0,0,0,0) 30%,rgba(0,0,0,0.63) 67%,rgba(0,0,0,0.65) 68%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#a6000000',GradientType=0 ); /* IE6-9 */
+    opacity: .5;
+}
+
+.container {
+    max-width: 93.5rem;
+    margin: 0 auto;
+    padding: 0 2rem;
+	/* background-color:darkgrey; */
+}
+
+/* Profile Section inside the Header */
+.profile {
+    padding: 5rem 0;
+	background-color: lightslategray;
+}
+
+.profile::after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+.profile-img {
+    display: flex;
+    float: right;
+    width: 250px;
+    /* position: absolute; */
+    height: 250px;
+    border-radius: 50%;
+    margin-right: 3rem;
+    object-fit: cover;
+    object-position: center right;
+    /* right: 300px; */
+    /* top: 30%; */
+    
+}
+
+section {
+    position: absolute;
+    width: 93.5rem;
+    height: 50%;
+}
+
+#section01 {
+    background: url(https://images.unsplash.com/photo-1499886887649-ea679189e7b5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80) center 25% / cover no-repeat;
+}
+
+.section-container {
+    display: flex;
+    
+    width: 80%;
+    height: 100%;
+    background-color: #fff;
+}
+
+.demo a {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    z-index: 2;
+    display: inline-block;
+    -webkit-transform: translate(0, -50%);
+    transform: translate(0, -50%);
+    color: #fff;
+    font : normal 400 20px/1 'Josefin Sans', sans-serif;
+    letter-spacing: .1em;
+    text-decoration: none;
+    transition: opacity .3s;
+}
+
+.demo a:hover {
+    opacity: .5;
+}
+
+#section01 a {
+    padding-top: 60px;
+}
+
+#section01 a span {
+    position: absolute;
+    top: 75px;
+    left: 50%;
+    width: 54px;
+    height: 54px;
+    margin-left: -12px;
+    border-left: 5px solid #fff;
+    border-bottom: 5px solid #fff;
+    -webkit-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+    box-sizing: border-box;
+}
+
+/* Gallery Section */
+.gallery {
+    display: flex;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 0;
+    padding: 5rem 0;
+    /* color: rgb(29, 30, 34); */
+    cursor: pointer;
+    background-color: #fff;
+}
+
+.gallery-item {
+    position: relative;
+    margin: 1.5rem;
+    padding: 1rem;
+    text-align: center;
+    height: 200px;
+    width: 450px;
+    background-color: lightslategray;
+    border-radius: 5%;
+    color: #fff;
+    font-size: 2rem;
+}
+

@@ -2,20 +2,9 @@ const fs = require("fs"); // To be able to access the file system
 const axios = require("axios");
 const inquirer = require("inquirer");
 const util = require("util");
-// const puppeteer = require("puppeteer");
+const puppeteer = require("puppeteer");
 
 const writeFileAsync = util.promisify(fs.writeFile);
-
-let img = "";
-let location = "";
-let gitProfile = "";
-let userBlog = "";
-let userBio = "";
-let repoNum = 0;
-let followers = 0;
-let following = 0;
-let starNum = 0;
-let color = ""; 
 
 function promptUser() {
     return inquirer.prompt([
@@ -26,25 +15,21 @@ function promptUser() {
       },
       {
         type: "input",
-        name: "Favorite Color",
+        name: "color",
         message: "What is your favorite color?"
       }
     ])
-}
-// inquirer // WHEN prompted for the developer's GitHub username
-    // .prompt({
-    //     message: "Enter a Github username",
-    //     name: "username"
-    // })
-function getRepoInfo(username) {
-        const queryUrl = `https://api.github.com/users/${username}`;
-        axios // Use axios module
+    .then(function ({ username, color }) {
+        const queryUrl = `https://api.github.com/users/${username}`;      
+        return axios // Use axios module
             .get(queryUrl) // Send GET request to the 'queryUrl'
-            .then(function(res) {
-                console.log("",res.data); // The response object returned from the request should contain a `data` property which should be an array of the user's GitHub repos.
+            .then(res => {
+                // console.log("API Call #1", res.data); // The response object returned from the request should contain a `data` property which should be an array of the user's GitHub repos.
                 let newUrl = `https://api.github.com/users/${username}/starred`;
+                
+                
                 axios
-                    .get(newUrl)
+                    .get(newUrl) // Send GET request for starred repos
                     .then(starredRepos => {
                         data = {
                             img: res.data.avatar_url,
@@ -59,30 +44,14 @@ function getRepoInfo(username) {
                             username: username,
                             color: color
                         };
+                        // console.log("API Call #2",data)
+                        generateHTML(data);
+                        writeHTML(generateHTML(data));
                     });
-
-                    // generateHTML(data);
-                    // writeHTML(generateHTML(data));
-                    // madePdf(username);
-                // const numfollowers = res.data.map(function(followers) {
-                //     return followers.
-                // })
-
-                // console.log("Repositories:", repoNames.length); // Log the total number of repos (jayone11 should return 14)
             });
-            
-            // inquirer // WHEN prompted for the developer's favorite color
-            //     .prompt({
-            //         message: "What is your favorite color?",
-            //         name: "Favorite Color"
-            //     })
-            //     .then(function(favoriteColor) {
-            //         console.log(favoriteColor);
-            //     });   
+    });
 
-}
-
-function generateHTML(answers) {
+    function generateHTML(data) {
     return `
     <!DOCTYPE html>
     <html lang="en">
@@ -96,17 +65,17 @@ function generateHTML(answers) {
     </head>
     <body>
         <header>
-            <div class="container">
+            <div class="container user-info-container">
             <!-- <div class="overlay01"></div>
                 <section id="section01" class="demo">
                     <a href="#"><span></span></a>
                 </section>-->
-                
+                <div class="user-info">
+                    <h1 class="username">Hello, my name is ${data.username}</h1>
+                    <h2 class="location">I am a developer located in ${data.location}</h2>
+                </div>
                 <div class="profile">
-                    <div class="user-info">
-                        <h1 class="username">${answers.name}</h1>
-                    </div>
-                    <img src="${answers.img}" alt="" class="profile-img">    
+                    <img src="${data.img}" alt="" class="profile-img">    
                 </div>
                 
             </div>
@@ -118,22 +87,22 @@ function generateHTML(answers) {
 
                     <div class="gallery-item" tabindex="0">
                         <div class="gallery-item-info"><p>Public Repositories</p></div>
-                        <span class="rep-count"></span>
+                        <h2 class="count rep-count">${data.repoNum}</h2>
                     </div>
 
                     <div class="gallery-item" tabindex="0">
                         <div class="gallery-item-info"><p>Followers</p></div>
-                        <span class="followers-count"></span>
+                        <h2 class="count followers-count">${data.followers}</h2>
                     </div>
             
                     <div class="gallery-item" tabindex="0">
                         <div class="gallery-item-info"><p>GitHub Stars</p></div>
-                        <span class="stars-count"></span>
+                        <h2 class="count stars-count">${data.starNum}</h2>
                     </div>
                     
                     <div class="gallery-item" tabindex="0">
                         <div class="gallery-item-info"><p>Following</p></div>
-                        <span class="following-count"></span>
+                        <h2 class="count following-count">${data.following}</h2>
                     </div>
 
                 </div>
@@ -143,65 +112,59 @@ function generateHTML(answers) {
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     </body>
     </html>`
+    };
 }
 
-async function init() {
-    // console.log("hi")
-    try {
-      const answers = await promptUser();
-      const repos = getRepoInfo(answers.username)
-      const html = generateHTML(answers);
+const writeHTML = function(generateHTML){
+    writeFileAsync("index.html", generateHTML);
+    }
+    
+     promptUser();
+    
+     async function makePdf(username){
+    
+      try {
+     
+      const browser = await puppeteer.launch();
+      const page = await browser.newPage();
+    
+    //the page.goto path should be manually set to where the HTML you want to convert to .pdf lives
+    
+      await page.goto("file://C:/hildadubon/sites/ucla-projects/hw-7/Developer-Profile-Generator");
+      await page.emulateMedia("screen");
+      await page.pdf({
+        path: `${username}.pdf`,
+        format: "A4",
+        printBackground:true,
+        landscape:true
+      });
+      
+      console.log("done");
+      await browser.exit();
+    } catch (error) {
+    console.log("our error");
+    }
+    }
+
+
+// async function init() {
+//     // console.log("hi")
+//     try {
+//       const answers = await promptUser();
+//       const repos = getRepoInfo(data)
+//       const html = generateHTML(answers);
 
       
   
-      await writeFileAsync("index.html", html);
+//       await writeFileAsync("index.html", html);
   
-      console.log("Successfully wrote to index.html");
-    } catch(err) {
-      console.log(err);
-    }
-  }
+//       console.log("Successfully wrote to index.html");
+//     } catch(err) {
+//       console.log(err);
+//     }
+//   }
   
-  init();
-    // .then(function({username}) {
-    //     const repoUrl = `https://api.github.com/users/${username}/repos?per_page=100`;
-    //     axios // Use axios module
-    //         .get(repoUrl) // Send GET request to the 'queryUrl'
-    //         .then(function(res) {
-    //             // console.log(res.data); // The response object returned from the request should contain a `data` property which should be an array of the user's GitHub repos.
-    //             // const numfollowers = res.data.map(function(followers) {
-    //             //     return followers.
-    //             // })
-    //             const repoNames = res.data.map(function(repo) {
-    //                 return repo.name;
-    //             });
-    //             console.log("Repositories:", repoNames.length); // Log the total number of repos (jayone11 should return 14)
-    //         });
-            
-    //         inquirer // WHEN prompted for the developer's favorite color
-    //             .prompt({
-    //                 message: "What is your favorite color?",
-    //                 name: "Favorite Color"
-    //             })
-    //             .then(function(favoriteColor) {
-    //                 console.log(favoriteColor);
-    //             });
-
-    //         axios
-    //             .get()
-    // });
-
-    // inquirer
-    //     .prompt({
-    //         message: "What is your favorite color?",
-    //         name: "favoriteColor"
-    //     })
-    //     .then(function(res) {
-
-    //     });
-
-    // How to give the user multiple prompts
-    
+//   init();
     
     // THEN a PDF profile is generated
         // The PDF will be populated with the following:

@@ -24,14 +24,20 @@ function promptUser() {
         return axios // Use axios module
             .get(queryUrl) // Send GET request to the 'queryUrl'
             .then(res => {
-                // console.log("API Call #1", res.data); // The response object returned from the request should contain a `data` property which should be an array of the user's GitHub repos.
+                console.log("API Call #1", res.data); // The response object returned from the request should contain a `data` property which should be an array of the user's GitHub repos.
                 let newUrl = `https://api.github.com/users/${username}/starred`;
                 
                 
                 axios
                     .get(newUrl) // Send GET request for starred repos
                     .then(starredRepos => {
+                        
+                        if(res.data.bio === null) {
+                            res.data.bio = `<h3 class="user-bio">${res.data.name} does not have a GitHub Bio.</h3>`
+                        }
+
                         data = {
+                            name: res.data.name,
                             img: res.data.avatar_url,
                             location: res.data.location,
                             gitProfile: res.data.html_url,
@@ -44,9 +50,11 @@ function promptUser() {
                             username: username,
                             color: color
                         };
-                        // console.log("API Call #2",data)
+
+                        console.log("API Call #2",data)
                         generateHTML(data);
                         writeHTML(generateHTML(data));
+                        makePdf(username);
                     });
             });
     });
@@ -71,13 +79,18 @@ function promptUser() {
                     <a href="#"><span></span></a>
                 </section>-->
                 <div class="user-info">
-                    <h1 class="username">Hello, my name is ${data.username}</h1>
-                    <h2 class="location">I am a developer located in ${data.location}</h2>
+                    <h1 class="username">Hello, my name is ${data.name}</h1>
+                    <h2 class="location">Located in ${data.location}</h2>
+                    <h3 class="user-bio">${data.userBio}</h3>
                 </div>
+                
                 <div class="profile">
                     <img src="${data.img}" alt="" class="profile-img">    
                 </div>
-                
+                <div class="social-media">
+                    <a href="${data.gitProfile}" alt="" class="profile-github">GitHub</a>
+                    <a href="https://${data.userBlog}" alt="" class="profile-github">Blog</a>    
+                </div>
             </div>
         </header>
 
@@ -122,49 +135,27 @@ const writeHTML = function(generateHTML){
      promptUser();
     
      async function makePdf(username){
-    
+    console.log(username);
       try {
      
       const browser = await puppeteer.launch();
       const page = await browser.newPage();
-    
-    //the page.goto path should be manually set to where the HTML you want to convert to .pdf lives
-    
-      await page.goto("file://C:/hildadubon/sites/ucla-projects/hw-7/Developer-Profile-Generator");
+
+    await page.goto('file:///Users/hildadubon/sites/ucla-projects/hw-7/Developer-Profile-Generator/index.html');
       await page.emulateMedia("screen");
-      await page.pdf({
+      await page.pdf({ 
         path: `${username}.pdf`,
         format: "A4",
         printBackground:true,
-        landscape:true
+        landscape:false
       });
       
-      console.log("done");
-      await browser.exit();
+      console.log("Generated PDF");
+      await browser.close();
     } catch (error) {
-    console.log("our error");
+    console.log("Error generating pdf");
     }
     }
-
-
-// async function init() {
-//     // console.log("hi")
-//     try {
-//       const answers = await promptUser();
-//       const repos = getRepoInfo(data)
-//       const html = generateHTML(answers);
-
-      
-  
-//       await writeFileAsync("index.html", html);
-  
-//       console.log("Successfully wrote to index.html");
-//     } catch(err) {
-//       console.log(err);
-//     }
-//   }
-  
-//   init();
     
     // THEN a PDF profile is generated
         // The PDF will be populated with the following:

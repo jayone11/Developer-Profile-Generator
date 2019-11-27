@@ -44,9 +44,10 @@ body {
     width: 50%;
     /* background-color: antiquewhite; */
     float: left;
-    padding: 5rem 0 5rem 2rem;
+    padding: 3.5rem 0 5rem 2rem;
     color: #fff;
     letter-spacing: .12rem;
+    font-size: 1.25rem;
 }
 
 .username {
@@ -55,12 +56,12 @@ body {
 }
 
 .user-bio {
-    padding-top: .5rem;
+    padding-top: 1.25rem;
 }
 
 /* Profile Section inside the Header */
 .profile {
-    padding: 5rem 0;
+    padding: 4rem 0;
     /* background-color: green; */
     display: flex;
     flex-wrap: wrap;
@@ -93,11 +94,18 @@ body {
 
 .social-media {
     display: flex;
-    flex-wrap: wrap;    
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
 }
 
-.user-bio {
-    
+.social-media a {
+    text-decoration: none;
+    color: #fff;
+    padding-right: 1em;
+}
+
+.social-media a:hover {
+    color: blue;
 }
 
 section {
@@ -166,7 +174,7 @@ section {
     flex-wrap: wrap;
     justify-content: center;
     margin: 0;
-    padding: 3rem 0;
+    padding: 5rem 0;
     /* color: rgb(29, 30, 34); */
     cursor: pointer;
     background-color: #fff;
@@ -175,10 +183,10 @@ section {
 
 .gallery-item {
     position: relative;
-    margin: 1.5rem;
-    padding: 1rem;
+    margin: 1.5em 0.25em;
+    padding: 2em;
     text-align: center;
-    height: 100px;
+    /* height: 100px; */
     width: 250px;
     background-color: lightslategray;
     border-radius: 5%;

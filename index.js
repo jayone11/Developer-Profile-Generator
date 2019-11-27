@@ -39,21 +39,20 @@ function promptUser() {
         const queryUrl = `https://api.github.com/users/${username}`;      
         return axios // Use axios module
             .get(queryUrl) // Send GET request to the 'queryUrl'
-            .then(res => {
-                console.log("API Call #1", res.data); // The response object returned from the request should contain a `data` property which should be an array of the user's GitHub repos.
+            .then(res => { // handle the response
+                // console.log("API Call #1", res.data); // The response object returned from the request should contain a `data` property which should be an array of the user's GitHub repos.
                 let newUrl = `https://api.github.com/users/${username}/starred`;
-                
                 
                 axios
                     .get(newUrl) // Send GET request for starred repos
                     .then(starredRepos => {
                         
                         if(res.data.bio === null) {
-                            res.data.bio = `<h3 class="user-bio">${res.data.name} does not have a GitHub Bio</h3>`
+                            res.data.bio = `${res.data.name} does not have a GitHub Bio`;
                         }
                         
-                        if(res.data.blog === null) {
-                            res.data.blog = `<h3 class="user-blog">${res.data.name} has not added a blog.</h3>`
+                        if(res.data.blog == "") {
+                            res.data.blog = `github.com`
                         }
 
                         data = {
@@ -61,7 +60,7 @@ function promptUser() {
                             img: res.data.avatar_url,
                             location: res.data.location,
                             gitProfile: res.data.html_url,
-                            userBlog: res.data.blog,
+                            userBlog: res.data.blog,    
                             userBio: res.data.bio,
                             repoNum: res.data.public_repos,
                             followers: res.data.followers,
@@ -100,8 +99,8 @@ function promptUser() {
                 </section>-->
                 <div class="user-info">
                     <h1 class="username">Hello, my name is ${data.name}</h1>
-                    <h2 class="location">Located in ${data.location}</h2>
-                    <h3 class="user-bio">${data.userBio}</h3>
+                    <p class="location">Located in ${data.location}</p>
+                    <p class="user-bio">${data.userBio}</p>
                     <div class="social-media">
                         <a href="${data.gitProfile}" alt="" class="profile-github">GitHub</a>
                         <a href="https://${data.userBlog}" alt="" class="profile-github">Blog</a>    
@@ -151,13 +150,13 @@ function promptUser() {
 
 const writeToHTML = function(generateHTML){
     writeFileAsync("index.html", generateHTML);
-    }
+}
     
-     promptUser();
+promptUser();
     
-     async function generatePdf(username){
+async function generatePdf(username){
     // console.log(username);
-      try {
+    try {
      
       const browser = await puppeteer.launch();
       const page = await browser.newPage();
@@ -176,21 +175,4 @@ const writeToHTML = function(generateHTML){
     } catch (error) {
     console.log("Error generating PDF");
     }
-    }
-    
-    // THEN a PDF profile is generated
-        // The PDF will be populated with the following:
-        // Profile image
-        // user name
-        // Links to the following:
-
-        // User location via Google Maps
-        // User GitHub profile
-        // User blog
-
-
-        // User bio
-        // Number of public repositories
-        // Number of followers
-        // Number of GitHub stars
-        // Number of users following
+}

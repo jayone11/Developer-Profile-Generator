@@ -6,6 +6,21 @@ const puppeteer = require("puppeteer");
 
 const writeFileAsync = util.promisify(fs.writeFile);
 
+const colors = {
+    blue: {
+        userInfoBackground: "#4392F1",
+        galleryItem: "#4392F1"
+    },
+    red: {
+        userInfoBackground: "#B51926",
+        galleryItem: "#B51926"
+    },
+    green: {
+        userInfoBackground: "#68B684",
+        galleryItem: "#68B684"
+    }
+}
+
 function promptUser() {
     return inquirer.prompt([
     {
@@ -14,9 +29,10 @@ function promptUser() {
         message: "Enter GitHub Username"
       },
       {
-        type: "input",
+        type: "checkbox",
         name: "color",
-        message: "What is your favorite color?"
+        message: "What is your favorite color?",
+        choices: ["blue", "red", "green"]
       }
     ])
     .then(function ({ username, color }) {
@@ -33,7 +49,11 @@ function promptUser() {
                     .then(starredRepos => {
                         
                         if(res.data.bio === null) {
-                            res.data.bio = `<h3 class="user-bio">${res.data.name} does not have a GitHub Bio.</h3>`
+                            res.data.bio = `<h3 class="user-bio">${res.data.name} does not have a GitHub Bio</h3>`
+                        }
+                        
+                        if(res.data.blog === null) {
+                            res.data.blog = `<h3 class="user-blog">${res.data.name} has not added a blog.</h3>`
                         }
 
                         data = {
@@ -53,8 +73,8 @@ function promptUser() {
 
                         console.log("API Call #2",data)
                         generateHTML(data);
-                        writeHTML(generateHTML(data));
-                        makePdf(username);
+                        writeToHTML(generateHTML(data));
+                        generatePdf(username);
                     });
             });
     });
@@ -73,7 +93,7 @@ function promptUser() {
     </head>
     <body>
         <header>
-            <div class="container user-info-container">
+            <div class="container user-info-container" style="background-color:${colors[data.color].userInfoBackground}">
             <!-- <div class="overlay01"></div>
                 <section id="section01" class="demo">
                     <a href="#"><span></span></a>
@@ -82,15 +102,16 @@ function promptUser() {
                     <h1 class="username">Hello, my name is ${data.name}</h1>
                     <h2 class="location">Located in ${data.location}</h2>
                     <h3 class="user-bio">${data.userBio}</h3>
+                    <div class="social-media">
+                        <a href="${data.gitProfile}" alt="" class="profile-github">GitHub</a>
+                        <a href="https://${data.userBlog}" alt="" class="profile-github">Blog</a>    
+                    </div>
                 </div>
                 
                 <div class="profile">
                     <img src="${data.img}" alt="" class="profile-img">    
                 </div>
-                <div class="social-media">
-                    <a href="${data.gitProfile}" alt="" class="profile-github">GitHub</a>
-                    <a href="https://${data.userBlog}" alt="" class="profile-github">Blog</a>    
-                </div>
+                
             </div>
         </header>
 
@@ -98,22 +119,22 @@ function promptUser() {
             <div class="container">
                 <div class="gallery">
 
-                    <div class="gallery-item" tabindex="0">
+                    <div class="gallery-item" tabindex="0" style="background-color:${colors[data.color].galleryItem}">
                         <div class="gallery-item-info"><p>Public Repositories</p></div>
                         <h2 class="count rep-count">${data.repoNum}</h2>
                     </div>
 
-                    <div class="gallery-item" tabindex="0">
+                    <div class="gallery-item" tabindex="0" style="background-color:${colors[data.color].galleryItem}">
                         <div class="gallery-item-info"><p>Followers</p></div>
                         <h2 class="count followers-count">${data.followers}</h2>
                     </div>
             
-                    <div class="gallery-item" tabindex="0">
+                    <div class="gallery-item" tabindex="0" style="background-color:${colors[data.color].galleryItem}">
                         <div class="gallery-item-info"><p>GitHub Stars</p></div>
                         <h2 class="count stars-count">${data.starNum}</h2>
                     </div>
                     
-                    <div class="gallery-item" tabindex="0">
+                    <div class="gallery-item" tabindex="0" style="background-color:${colors[data.color].galleryItem}">
                         <div class="gallery-item-info"><p>Following</p></div>
                         <h2 class="count following-count">${data.following}</h2>
                     </div>
@@ -128,14 +149,14 @@ function promptUser() {
     };
 }
 
-const writeHTML = function(generateHTML){
+const writeToHTML = function(generateHTML){
     writeFileAsync("index.html", generateHTML);
     }
     
      promptUser();
     
-     async function makePdf(username){
-    console.log(username);
+     async function generatePdf(username){
+    // console.log(username);
       try {
      
       const browser = await puppeteer.launch();
@@ -146,14 +167,14 @@ const writeHTML = function(generateHTML){
       await page.pdf({ 
         path: `${username}.pdf`,
         format: "A4",
-        printBackground:true,
-        landscape:false
+        printBackground: true,
+        landscape: false
       });
       
-      console.log("Generated PDF");
+      console.log("Succesfully generated PDF");
       await browser.close();
     } catch (error) {
-    console.log("Error generating pdf");
+    console.log("Error generating PDF");
     }
     }
     

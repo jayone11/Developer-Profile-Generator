@@ -37,7 +37,7 @@ body {
     flex-wrap: nowrap;
     background-color: lightslategray;
     position: relative;
-    padding: 5rem 0;
+    padding: 2rem 0;
 }
 
 .user-info {
@@ -51,6 +51,11 @@ body {
 
 .username {
     padding-bottom: 1rem;
+    font-size: 1.75rem;
+}
+
+.user-bio {
+    padding-top: .5rem;
 }
 
 /* Profile Section inside the Header */
@@ -87,7 +92,8 @@ body {
 }
 
 .social-media {
-    
+    display: flex;
+    flex-wrap: wrap;    
 }
 
 .user-bio {
@@ -160,7 +166,7 @@ section {
     flex-wrap: wrap;
     justify-content: center;
     margin: 0;
-    padding: 5rem 0;
+    padding: 3rem 0;
     /* color: rgb(29, 30, 34); */
     cursor: pointer;
     background-color: #fff;
@@ -172,16 +178,16 @@ section {
     margin: 1.5rem;
     padding: 1rem;
     text-align: center;
-    height: 200px;
-    width: 450px;
+    height: 100px;
+    width: 250px;
     background-color: lightslategray;
     border-radius: 5%;
     color: #fff;
-    font-size: 2rem;
+    font-size: 1.5rem;
 }
 
 .count {
-    padding: 2rem 0;
-    font-size: 4rem;
+    padding: 1rem 0;
+    font-size: 2.5rem;
 }
 

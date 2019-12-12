@@ -161,7 +161,7 @@ async function generatePdf(username){
       const browser = await puppeteer.launch();
       const page = await browser.newPage();
 
-    await page.goto('file:///Users/hildadubon/sites/ucla-projects/hw-7/Developer-Profile-Generator/index.html');
+      await page.goto('https://jayone11.github.io/Developer-Profile-Generator/index.html');
       await page.emulateMedia("screen");
       await page.pdf({ 
         path: `${username}.pdf`,

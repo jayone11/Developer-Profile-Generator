@@ -3,6 +3,7 @@ const axios = require("axios");
 const inquirer = require("inquirer");
 const util = require("util");
 const puppeteer = require("puppeteer");
+const path = require('path');
 
 const writeFileAsync = util.promisify(fs.writeFile);
 
@@ -158,10 +159,9 @@ async function generatePdf(username){
     // console.log(username);
     try {
      
-      const browser = await puppeteer.launch();
+      const browser = await puppeteer.launch({ headless: true });
       const page = await browser.newPage();
-
-      await page.goto('https://jayone11.github.io/Developer-Profile-Generator/index.html');
+      await page.goto(`file:${path.join(__dirname, 'index.html')}`);
       await page.emulateMedia("screen");
       await page.pdf({ 
         path: `${username}.pdf`,
